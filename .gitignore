@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs
+/Home/bin
+/Home/obj/Debug
+/Home.Tests/bin/Debug
+/Home.Tests/obj/Debug
+/packages

@@ -1,0 +1,214 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html ng-app="todoApp">
+<head>
+    <title>TO DO List</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <!-- 합쳐지고 최소화된 최신 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+
+    <script>
+        var model = {
+            user: "동하",
+            items: []
+        };
+        var todoApp = angular.module("todoApp", []);
+
+        todoApp.run(function ($http) {
+            $http.post("/Study/TodoJson").then(function (data) {
+                //console.log(data.data.items);
+                //model.items = data.data.items;
+            });
+        });
+
+        todoApp.filter("checkedItems", function () {
+            return function (items, showComplete) {
+                var resultArr = [];
+                angular.forEach(items, function (item) {
+                    if (item.done == false || showComplete == true) {
+                        resultArr.push(item);
+                    }
+                });
+                return resultArr;
+            }
+        });
+
+        todoApp.controller("ToDoCtrl", function ($scope, $http, $q) {
+            $scope.todo = model;
+            $scope.incompleteCount = function () {
+                var count = 0;
+                angular.forEach($scope.todo.items, function (item) {
+                    if (!item.done) { count++ }
+                });
+                return count;
+            }
+            $scope.warningLevel = function () {
+                return $scope.incompleteCount() < 3 ? "label-success" : "label-warning";
+            }
+            $scope.addNewItem = function (actionText) {
+                $scope.todo.items.push({ action: actionText, done: false });
+            }
+
+            $scope.TodoJson = function () {
+                $http.post("/Study/TodoJson").then(function (data) {
+                    model.items = data.data.items;
+                    console.log("TodoJson");
+                });
+            }
+            $scope.TodoJsonDelay = function () {
+                $http.post("/Study/TodoJsonDelay").then(function (data) {
+                    model.items = data.data.items;
+                });
+            }
+
+
+
+
+$scope.async = function () {
+    var Q = $q;
+
+    var list = [
+        { id: 1, name: 'name1' },
+        { id: 2, name: 'name2' },
+        { id: 3, name: 'name3' },
+        { id: 4, name: 'name4' },
+        { id: 5, name: 'name5' }
+    ];
+
+    var asyncJob = function (i) {
+        var deferred = Q.defer();
+
+        if (i == 3) {
+            $http.post("/Study/TodoJsonDelay").then(function (data) {
+                model.items = data.data.items;
+                console.log("TodoJson");
+                deferred.resolve(i + 1);
+            });
+        }
+        else {
+            setTimeout(function () {
+                console.log(list[i]);
+                deferred.resolve(i + 1);
+            }, 1000);
+        }                  
+                    
+        return deferred.promise;
+                    
+    };
+
+    function rtn(idx) {
+        if (idx > list.length - 1) { return ; } //재귀 탈출용, idx증가 값이 리스트 수보다 많을때 리턴
+
+        return asyncJob(idx) //idx번째에 해당하는 리스트를  console 출력하도록 asyncJob함수 호출
+            .then(function (result) { //asyncJob함수 timer 딜레이 이후 리턴될때
+            return rtn(idx + 1); // 자기 자신 재귀 호출로 다음번 리스트 반복
+        });
+    }
+
+    rtn(0).then(function () { // rtn 함수 최종 재귀 탈출 시점에 콘솔로그 출력
+        console.log('completed');
+    });
+};
+
+
+
+$scope.sync = function () {
+    var Q = $q;
+
+    var list = [
+        { id: 1, name: 'name1' },
+        { id: 2, name: 'name2' },
+        { id: 3, name: 'name3' },
+        { id: 4, name: 'name4' },
+        { id: 5, name: 'name5' }
+    ];
+
+    var aJob = function (i) {
+        var deferred = Q.defer();
+
+        $http.post("/Study/TodoJsonDelay").then(function (data) {
+            model.items = data.data.items;
+            console.log("TodoJson");
+            deferred.resolve(i + 1);
+        });
+        return deferred.promise;
+    };
+    var bJob = function (i) {
+        var deferred = Q.defer();
+        setTimeout(function () {
+            console.log(list[i]);
+            deferred.resolve(i + 1);
+        }, 1000);
+        return deferred.promise;
+    };
+
+    function rtn() {
+
+        aJob(0).then(function (result) {
+            bJob(1).then(function (result) {
+                console.log('completed');
+            });
+        });
+    }
+
+    rtn();
+};
+
+        });
+    </script>
+</head>
+<body ng-controller="ToDoCtrl">
+    <div class="page-header">
+        <h1>
+            {{todo.user}}'s To Do List
+            <span class="label label-default"
+                  ng-class="warningLevel()"
+                  ng-hide="incompleteCount() == 0">{{incompleteCount()}}</span>
+        </h1>
+
+        <button class="btn btn-default" ng-click="async()"> async </button>
+        <button class="btn btn-default" ng-click="sync()"> sync </button>
+
+
+    </div>
+    <div class="panel">
+        <div class="input-group">
+            <input class="form-control" ng-model="actionText" />
+            <span class="input-group-btn">
+                <button class="btn btn-default"
+                        ng-click="addNewItem(actionText)">
+                    Add
+                </button>
+            </span>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Done</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in todo.items | checkedItems:showComplete | orderBy:'action'">
+                    <td>{{item.action}}</td>
+                    <td><input type="checkbox" ng-model="item.done" /></td>
+                    <td>{{item.done}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="checkbox-inline">
+            <label>
+                <label><input type="checkbox" ng-model="showComplete" /> Show Complete</label>
+            </label>
+        </div>
+    </div>
+</body>
+</html>

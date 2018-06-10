@@ -1,0 +1,80 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html ng-app="sportsStore">
+<head>
+    <title>SportsStore</title>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <!-- 합쳐지고 최소화된 최신 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+    <script>
+
+        angular.module("sportsStore", ["customFilters", "cart", "ngRoute"])
+            .config(function ($routeProvider) {
+                console.log($routeProvider);
+                $routeProvider.when("/complete", {
+                    templateUrl: "/Content/angularStudy/thankYou.html"
+                });
+                $routeProvider.when("/placeorder", {
+                    templateUrl: "/Content/angularStudy/placeOrder.html"
+                });
+                $routeProvider.when("/checkout", {
+                    templateUrl: "/Content/angularStudy/checkoutSummary.html"
+                });
+                $routeProvider.when("/products", {
+                    templateUrl: "/Content/angularStudy/productList.html"
+                });
+                $routeProvider.otherwise({
+                    templateUrl: "/Content/angularStudy/productList.html"
+                });
+            });
+
+    </script>
+    <script>
+                        //dummy data
+                        //var products = {
+                        //    products: [
+                        //        {
+                        //            name: "Product #1", description: "A product",
+                        //            category: "Category #1", price: 100
+                        //        },
+                        //        {
+                        //            name: "Product #2", description: "A product",
+                        //            category: "Category #1", price: 110
+                        //        },
+                        //        {
+                        //            name: "Product #3", description: "A product",
+                        //            category: "Category #2", price: 210
+                        //        },
+                        //        {
+                        //            name: "Product #4", description: "A product",
+                        //            category: "Category #3", price: 202
+                        //        }]
+                        //};
+    </script>
+    <script src="/Content/angularStudy/sportsStore.js"></script>
+    <script src="/Content/angularStudy/productListCtrl.js"></script>
+    <script src="/Content/angularStudy/customFilters.js"></script>
+    <script src="/Content/angularStudy/cart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular-route.js"></script>
+    <script src="/Content/angularStudy/checkoutControllers.js"></script>
+</head>
+<body ng-controller="sportsStoreCtrl">
+    <div class="navbar navbar-inverse">
+        <a class="navbar-brand" href="#">SPORTS STORE</a>
+        <cart-summary />
+    </div>
+    <div class="alert alert-danger" ng-show="data.error">
+        Error ({{data.error.status}}). The product data was not loaded.
+        <a href="/Study/AngularJs3" class="alert-link">Click here to try again</a>
+    </div>
+    <ng-view />
+
+</body>
+</html>

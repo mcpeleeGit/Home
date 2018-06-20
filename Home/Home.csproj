@@ -210,6 +210,10 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\angularStudy5\list.html" />
+    <Content Include="Content\angularStudy5\table.html" />
+    <Content Include="Content\angularStudy5\Filters.js" />
+    <Content Include="Content\angularStudy5\Controllers.js" />
     <Content Include="Content\angularStudy\adminControllers.js" />
     <Content Include="Content\angularStudy\adminLogin.html" />
     <Content Include="Content\angularStudy\adminMain.html" />
@@ -286,6 +290,9 @@
     <Content Include="Views\Study\AngularJs2.cshtml" />
     <Content Include="Views\Study\AngularJs3.cshtml" />
     <Content Include="Views\Study\AngularJs4.cshtml" />
+    <Content Include="Views\Study\AngularJs5.cshtml" />
+    <Content Include="Views\Study\AngularJs6.cshtml" />
+    <Content Include="Views\Study\AngularJs7.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

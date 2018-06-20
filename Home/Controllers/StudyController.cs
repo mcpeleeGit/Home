@@ -29,6 +29,18 @@ namespace Home.Controllers
         {
             return View();
         }
+        public ActionResult AngularJs5()
+        {
+            return View();
+        }
+        public ActionResult AngularJs6()
+        {
+            return View();
+        }
+        public ActionResult AngularJs7()
+        {
+            return View();
+        }
         public JsonResult ProductOrders()
         {
             return new JsonResult();
